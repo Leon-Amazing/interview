@@ -1,6 +1,6 @@
 # JavaScript
 
-### 1.简述你对闭包的理解，以及其优缺点
+### 1.简述对闭包的理解，以及其优缺点
 **闭包：函数执行产生一个不被释放的私有的上下文，这样不仅保护里面的私有变量不受污染，而且还可以把这些信息存储下来「保护+保存」**
 1. 理论知识：
 v8执行机制，函数执行时生成执行私有上下文EC，进栈执行，声明的变量都保存在变量对象AO中，首先初始化作用域链、形参赋值、变量提升以及代码执行，正常情况下代码执行完出栈释放，但是由于浏览器垃圾回收机制，导致当前上下文中的某个变量被上下文之外的东西占用，不能被释放，这样就形成了闭包，所以说私有变量不受外面干扰和污染，另一方面也把这些东西保存下来了，这也是闭包的两大作用吧，保存和保护。
@@ -51,4 +51,52 @@ a = 13; // Uncaught TypeError: Assignment to constant variable
 const obj = { name: 'abc' };
 obj.name = 'edf';
 console.log(obj); // {name: 'edf'}
+```
+
+### 3.防抖和节流
+公用函数
+```js
+const clearTimer = (timer) => {
+    timer ? clearTimeout(timer) : '';
+    return null;
+};
+```
+防抖：用户频繁进行某项操作的时候，只识别一次「自定义频繁的规则、自定义触发边界...」
+```js
+const debounce = (fn, wait = 300, immediate = false) => {
+    let timer = null;
+    return (...params) => {
+        let now = !timer && immediate;
+        timer = clearTimer(timer);
+        timer = setTimeout(() => {
+            timer = clearTimer(timer);
+            !immediate ? fn.apply(this, params) : '';
+        }, wait)
+        if (now) return fn.apply(this, params);
+    }
+}
+```
+节流：“降频”，用户频繁进行某项操作的时候，降低默认的触发频率
+```js
+const throttle = (fn, wait = 300) => {
+    let timer = null,
+        previous = 0;
+    return (...params) => {
+        let now = +new Date;
+        let remaining = wait - (now - previous);
+        if (remaining <= 0) {
+            timer = clearTimer(timer);
+            previous = +new Date;
+            fn.apply(this, params);
+        } else {
+            if (!timer) {
+                timer = clearTimer(timer);
+                previous = +new Date;
+                timer = setTimeout(() => {
+                    fn.apply(this, params);
+                }, remaining);
+            }
+        }
+    }
+}
 ```
