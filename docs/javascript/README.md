@@ -107,3 +107,93 @@ const throttle = (fn, wait = 300) => {
     }
 }
 ```
+
+
+### 5.Object.prototype.hasPubProperty
+1. Object.prototype.hasOwnProperty：用来检测是否为私有属性  
+语法：[对象].hasOwnProperty([属性])  
+检测[属性]是否为[对象]的私有属性，是返回TRUE，不是则返回FALSE；只看私有中有没有(和公有不存在没关系)
+
+2. in操作符  
+语法：[属性] in [对象]  
+检测[属性]是否率属于这个[对象]，不论公有还是私有，只要能访问到这个属性，则结果就是TRUE
+
+思路1(不准确)：
+```js
+Object.prototype.hasPubProperty = function hasPubProperty(attr) {
+    // 思路：是对象的属性，而且还不是私有的属性，这样只能是公有属性了
+    // 问题：如果attr既是私有的属性，也是公有的属性，基于这种方案检测结果是false
+    return (attr in this) && !this.hasOwnProperty(attr); 
+}
+```
+
+思路2(准确)：
+```js
+Object.prototype.hasPubProperty = function hasPubProperty(attr) {
+    // this->obj要处理的对象  attr->'toString'要检测的属性
+    // 思路：跳过私有属性的查找，直接在公有属性中查找，看看是否存在
+    // Object.getPrototypeOf([实例对象])：
+    // 获取当前实例对象的原型对象(或者获取“实例对象.__proto__”)
+    let proto = Object.getPrototypeOf(this);
+    while (proto) {
+        if (proto.hasOwnProperty(attr)) return true;
+        proto = Object.getPrototypeOf(proto);
+    }
+    return false;
+};
+let obj = {
+    name: 'leon',
+    age: 13,
+    toString() { }
+};
+console.log(obj.hasPubProperty('toString')); //true
+```
+
+
+### 6.call、apply和bind
+Function.prototype
++ call
++ apply
++ bind  
+所有的函数都是Function类的实例，所以所有函数都可以调用这三个方法；而这个三个方法都是用来改变函数中的THIS指向的；
+
+call VS apply
++ 都是把函数立即执行，改变函数中的this指向的「第一个参数是谁，就把this改为谁」
++ 唯一区别：apply要求把传递给函数的实参，以数组的形式管理起来「最终效果和call一样，也是把数组中每一项，一个个的传给函数」
++ 真实项目中建议大家使用call，因为其性能好一些「做过测试：三个及以上参数，call的性能明显比apply好一些」
+
+call VS bind
++ call是把函数立即执行，而bind只是预处理函数中的this和参数，函数此时并没有执行
+
+`call`
+```js
+Function.prototype.call = function call(context, ...params) {
+    if (context == null) context = window;
+    if (!/^(object|function)$/.test(typeof context)) context = Object(context);
+    let key = Symbol('KEY'),
+        result;
+    context[key] = this;
+    result = context[key](...params);
+    Reflect.deleteProperty(context, key);
+    return result;
+};
+const fn = function fn(x, y) {
+    console.log(this, x, y);
+    return x + y;
+};
+let obj = {
+    name: 'obj'
+};
+let res = fn.call('leon', 10, 20);
+console.log(res);
+```
+
+`bind`
+```js
+Function.prototype.bind = function bind(context, ...params) {
+    return (...args) => {
+        params = params.concat(args);
+        return this.call(context, ...params);
+    };
+};
+```
