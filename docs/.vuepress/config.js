@@ -17,6 +17,10 @@ module.exports = {
                 link: '/javascript/README.md',
             },
             {
+                text: '方法库',
+                link: '/javascript/Tool.md',
+            },
+            {
                 text: 'Vue',
                 link: '/vue/README.md',
             },
