@@ -25,9 +25,9 @@
 ```js
 Array.prototype.forEach = function forEach(callback) {
   for (let i = 0; i < this.length; i++) {
-    callback(this[i], i)
+    callback(this[i], i);
   }
-}
+};
 ```
 
 ## 3.let const 和 var 的区别
@@ -45,12 +45,12 @@ Array.prototype.forEach = function forEach(callback) {
 5. let 的暂时性死区问题
 
    ```js
-   console.log(typeof a)
+   console.log(typeof a);
    // "undefined" 基于typeof检测一个未被声明的变量，结果不会抱错，而是"undefined"
 
-   console.log(typeof a)
+   console.log(typeof a);
    // Uncaught ReferenceError: Cannot access 'a' before initialization
-   let a = 100
+   let a = 100;
    ```
 
 6. 基于 const 声明的变量，后期不允许更改其指针指向（也就是不能重新赋值为其他的值）;
@@ -72,26 +72,26 @@ console.log(obj); // {name: 'edf'}
 
 ```js
 const clearTimer = (timer) => {
-  timer ? clearTimeout(timer) : ''
-  return null
-}
+  timer ? clearTimeout(timer) : "";
+  return null;
+};
 ```
 
 防抖：用户频繁进行某项操作的时候，只识别一次「自定义频繁的规则、自定义触发边界...」
 
 ```js
 const debounce = (fn, wait = 300, immediate = false) => {
-  let timer = null
+  let timer = null;
   return (...params) => {
-    let now = !timer && immediate
-    timer = clearTimer(timer)
+    let now = !timer && immediate;
+    timer = clearTimer(timer);
     timer = setTimeout(() => {
-      timer = clearTimer(timer)
-      !immediate ? fn.apply(this, params) : ''
-    }, wait)
-    if (now) return fn.apply(this, params)
-  }
-}
+      timer = clearTimer(timer);
+      !immediate ? fn.apply(this, params) : "";
+    }, wait);
+    if (now) return fn.apply(this, params);
+  };
+};
 ```
 
 节流：“降频”，用户频繁进行某项操作的时候，降低默认的触发频率
@@ -99,25 +99,25 @@ const debounce = (fn, wait = 300, immediate = false) => {
 ```js
 const throttle = (fn, wait = 300) => {
   let timer = null,
-    previous = 0
+    previous = 0;
   return (...params) => {
-    let now = +new Date()
-    let remaining = wait - (now - previous)
+    let now = +new Date();
+    let remaining = wait - (now - previous);
     if (remaining <= 0) {
-      timer = clearTimer(timer)
-      previous = +new Date()
-      fn.apply(this, params)
+      timer = clearTimer(timer);
+      previous = +new Date();
+      fn.apply(this, params);
     } else {
       if (!timer) {
-        timer = clearTimer(timer)
-        previous = +new Date()
+        timer = clearTimer(timer);
+        previous = +new Date();
         timer = setTimeout(() => {
-          fn.apply(this, params)
-        }, remaining)
+          fn.apply(this, params);
+        }, remaining);
       }
     }
-  }
-}
+  };
+};
 ```
 
 ## 5.Object.prototype.hasPubProperty
@@ -136,8 +136,8 @@ const throttle = (fn, wait = 300) => {
 Object.prototype.hasPubProperty = function hasPubProperty(attr) {
   // 思路：是对象的属性，而且还不是私有的属性，这样只能是公有属性了
   // 问题：如果attr既是私有的属性，也是公有的属性，基于这种方案检测结果是false
-  return attr in this && !this.hasOwnProperty(attr)
-}
+  return attr in this && !this.hasOwnProperty(attr);
+};
 ```
 
 思路 2(准确)：
@@ -148,19 +148,19 @@ Object.prototype.hasPubProperty = function hasPubProperty(attr) {
   // 思路：跳过私有属性的查找，直接在公有属性中查找，看看是否存在
   // Object.getPrototypeOf([实例对象])：
   // 获取当前实例对象的原型对象(或者获取“实例对象.__proto__”)
-  let proto = Object.getPrototypeOf(this)
+  let proto = Object.getPrototypeOf(this);
   while (proto) {
-    if (proto.hasOwnProperty(attr)) return true
-    proto = Object.getPrototypeOf(proto)
+    if (proto.hasOwnProperty(attr)) return true;
+    proto = Object.getPrototypeOf(proto);
   }
-  return false
-}
+  return false;
+};
 let obj = {
-  name: 'leon',
+  name: "leon",
   age: 13,
-  toString() {}
-}
-console.log(obj.hasPubProperty('toString')) //true
+  toString() {},
+};
+console.log(obj.hasPubProperty("toString")); //true
 ```
 
 ## 6.call、apply 和 bind
@@ -186,24 +186,24 @@ call VS bind
 
 ```js
 Function.prototype.call = function call(context, ...params) {
-  if (context == null) context = window
-  if (!/^(object|function)$/.test(typeof context)) context = Object(context)
-  let key = Symbol('KEY'),
-    result
-  context[key] = this
-  result = context[key](...params)
-  Reflect.deleteProperty(context, key)
-  return result
-}
+  if (context == null) context = window;
+  if (!/^(object|function)$/.test(typeof context)) context = Object(context);
+  let key = Symbol("KEY"),
+    result;
+  context[key] = this;
+  result = context[key](...params);
+  Reflect.deleteProperty(context, key);
+  return result;
+};
 const fn = function fn(x, y) {
-  console.log(this, x, y)
-  return x + y
-}
+  console.log(this, x, y);
+  return x + y;
+};
 let obj = {
-  name: 'obj'
-}
-let res = fn.call('leon', 10, 20)
-console.log(res)
+  name: "obj",
+};
+let res = fn.call("leon", 10, 20);
+console.log(res);
 ```
 
 `bind`
@@ -211,10 +211,10 @@ console.log(res)
 ```js
 Function.prototype.bind = function bind(context, ...params) {
   return (...args) => {
-    params = params.concat(args)
-    return this.call(context, ...params)
-  }
-}
+    params = params.concat(args);
+    return this.call(context, ...params);
+  };
+};
 ```
 
 ## 7.跨域解决方案
@@ -233,101 +233,101 @@ Function.prototype.bind = function bind(context, ...params) {
 
 ```js
 /*-CREATE SERVER-*/
-const express = require('express'),
-  app = express()
+const express = require("express"),
+  app = express();
 app.listen(1001, () => {
   console.log(
     `THE WEB SERVICE IS CREATED SUCCESSFULLY AND IS LISTENING TO THE PORT：1001`
-  )
-})
+  );
+});
 
-app.get('/user/list', (req, res) => {
-  let { callback } = req.query
+app.get("/user/list", (req, res) => {
+  let { callback } = req.query;
   // callback存储的就是客户端传递的全局函数名
   let result = {
     code: 0,
-    data: ['张三', '李四']
-  }
+    data: ["张三", "李四"],
+  };
   // 返回给客户端指定的格式
-  res.send(`${callback}(${JSON.stringify(result)})`)
-})
+  res.send(`${callback}(${JSON.stringify(result)})`);
+});
 
 /* STATIC WEB */
-app.use(express.static('./'))
+app.use(express.static("./"));
 ```
 
 客户端处理
 
 ```js
-;(function () {
+(function () {
   // 检测是否为纯粹对象
   const isPlainObject = function isPlainObject(obj) {
-    let proto, Ctor
-    if (!obj || Object.prototype.toString.call(obj) !== '[object Object]')
-      return false
-    proto = Object.getPrototypeOf(obj)
-    if (!proto) return true
-    Ctor = proto.hasOwnProperty('constructor') && proto.constructor
-    return typeof Ctor === 'function' && Ctor === Object
-  }
+    let proto, Ctor;
+    if (!obj || Object.prototype.toString.call(obj) !== "[object Object]")
+      return false;
+    proto = Object.getPrototypeOf(obj);
+    if (!proto) return true;
+    Ctor = proto.hasOwnProperty("constructor") && proto.constructor;
+    return typeof Ctor === "function" && Ctor === Object;
+  };
 
   // 把普通对象变为URLENCODED格式字符串
   const stringify = function stringify(obj) {
     let str = ``,
-      keys = Object.keys(obj).concat(Object.getOwnPropertySymbols(obj))
+      keys = Object.keys(obj).concat(Object.getOwnPropertySymbols(obj));
     keys.forEach((key) => {
-      str += `&${key}=${obj[key]}`
-    })
-    return str.substring(1)
-  }
+      str += `&${key}=${obj[key]}`;
+    });
+    return str.substring(1);
+  };
 
   /* 封装JSONP函数 */
   const jsonp = function jsonp(url, config) {
     return new Promise((resolve, reject) => {
       // 初始化参数
-      if (typeof url !== 'string') throw new TypeError('url is not a string!')
-      if (!isPlainObject(config)) config = {}
+      if (typeof url !== "string") throw new TypeError("url is not a string!");
+      if (!isPlainObject(config)) config = {};
       config = Object.assign(
         {
           params: null,
-          jsonp: 'callback'
+          jsonp: "callback",
         },
         config
-      )
+      );
 
       // 创建一个全局函数
-      let f_name = `jsonp${+new Date()}`
+      let f_name = `jsonp${+new Date()}`;
       window[f_name] = (value) => {
         // 请求成功
-        resolve(value)
-        delete window[f_name]
-        document.body.removeChild(script)
-      }
+        resolve(value);
+        delete window[f_name];
+        document.body.removeChild(script);
+      };
 
       // 处理URL「拼接问号参数 & 拼接函数名」
-      let params = config.params
+      let params = config.params;
       if (params) {
-        if (isPlainObject(params)) params = stringify(params)
-        url += `${url.includes('?') ? '&' : '?'}${params}`
+        if (isPlainObject(params)) params = stringify(params);
+        url += `${url.includes("?") ? "&" : "?"}${params}`;
       }
-      url += `${url.includes('?') ? '&' : '?'}${config.jsonp}=${f_name}`
+      url += `${url.includes("?") ? "&" : "?"}${config.jsonp}=${f_name}`;
 
       // 发送请求
-      let script = document.createElement('script')
-      script.src = url
+      let script = document.createElement("script");
+      script.src = url;
       script.onerror = (err) => {
         // 请求失败
-        reject(err)
-      }
-      document.body.appendChild(script)
-    })
-  }
+        reject(err);
+      };
+      document.body.appendChild(script);
+    });
+  };
 
   /* 暴露API */
-  if (typeof module === 'object' && typeof module.exports === 'object')
-    module.exports = jsonp
-  if (typeof window !== 'undefined') window.jsonp = jsonp
-})()
+  if (typeof module === "object" && typeof module.exports === "object")
+    module.exports = jsonp;
+  if (typeof window !== "undefined") window.jsonp = jsonp;
+})();
 ```
 
 JSONP 测试代码
@@ -366,57 +366,60 @@ JSONP 测试代码
 
 ```js
 /*-CREATE SERVER-*/
-const express = require('express'),
-  app = express()
+const express = require("express"),
+  app = express();
 app.listen(1001, () => {
   console.log(
     `THE WEB SERVICE IS CREATED SUCCESSFULLY AND IS LISTENING TO THE PORT：1001`
-  )
-})
+  );
+});
 
 /*-MIDDLE WARE-*/
 // 设置白名单
 let safeList = [
-  'http://127.0.0.1:5500',
-  'http://127.0.0.1:3000',
-  'http://127.0.0.1:8080'
-]
+  "http://127.0.0.1:5500",
+  "http://127.0.0.1:3000",
+  "http://127.0.0.1:8080",
+];
 app.use((req, res, next) => {
-  let origin = req.headers.origin || req.headers.referer || ''
-  origin = origin.replace(/\/$/g, '')
-  origin = !safeList.includes(origin) ? '' : origin
-  res.header('Access-Control-Allow-Origin', origin)
-  res.header('Access-Control-Allow-Credentials', true)
+  let origin = req.headers.origin || req.headers.referer || "";
+  origin = origin.replace(/\/$/g, "");
+  origin = !safeList.includes(origin) ? "" : origin;
+  res.header("Access-Control-Allow-Origin", origin);
+  res.header("Access-Control-Allow-Credentials", true);
   res.header(
-    'Access-Control-Allow-Headers',
-    'Content-Type,Content-Length,Authorization, Accept,X-Requested-With'
-  )
-  res.header('Access-Control-Allow-Methods', 'PUT,POST,GET,DELETE,OPTIONS,HEAD')
-  req.method === 'OPTIONS' ? res.send('OK') : next()
-})
+    "Access-Control-Allow-Headers",
+    "Content-Type,Content-Length,Authorization, Accept,X-Requested-With"
+  );
+  res.header(
+    "Access-Control-Allow-Methods",
+    "PUT,POST,GET,DELETE,OPTIONS,HEAD"
+  );
+  req.method === "OPTIONS" ? res.send("OK") : next();
+});
 
 /*-API-*/
-app.get('/list', (req, res) => {
+app.get("/list", (req, res) => {
   res.send({
     code: 0,
-    message: 'zhufeng'
-  })
-})
+    message: "zhufeng",
+  });
+});
 
 /* STATIC WEB */
-app.use(express.static('./'))
+app.use(express.static("./"));
 ```
 
 客户端
 
 ```js
 axios
-  .get('http://127.0.0.1:1001/list', {
-    withCredentials: true
+  .get("http://127.0.0.1:1001/list", {
+    withCredentials: true,
   })
   .then((response) => {
-    console.log(response)
-  })
+    console.log(response);
+  });
 ```
 
 ### Proxy
@@ -425,69 +428,71 @@ axios
 
 ```js
 /*-CREATE SERVER-*/
-const express = require('express'),
-  app = express()
+const express = require("express"),
+  app = express();
 app.listen(1001, () => {
   console.log(
     `THE WEB SERVICE IS CREATED SUCCESSFULLY AND IS LISTENING TO THE PORT：1001`
-  )
-})
+  );
+});
 
 // 代理
-const request = require('request')
-app.get('/asimov/subscriptions/recommended_collections', (req, res) => {
-  let jianURL = `https://www.jianshu.com${req.url}`
-  req.pipe(request(jianURL)).pipe(res)
-})
+const request = require("request");
+app.get("/asimov/subscriptions/recommended_collections", (req, res) => {
+  let jianURL = `https://www.jianshu.com${req.url}`;
+  req.pipe(request(jianURL)).pipe(res);
+});
 
 /* STATIC WEB */
-app.use(express.static('./'))
+app.use(express.static("./"));
 ```
 
 客户端
 
 ```js
-axios.get('/asimov/subscriptions/recommended_collections').then((response) => {
-  console.log(response.data)
-})
+axios.get("/asimov/subscriptions/recommended_collections").then((response) => {
+  console.log(response.data);
+});
 ```
 
 ## 8.实现并发管控
+
+方法一：基于创造多个工作区，实现并发管控
 
 ```js
 // 模拟数据请求
 const delay = function delay(interval) {
   return new Promise((resolve, reject) => {
     setTimeout(() => {
-      resolve(interval)
-    }, interval)
-  })
-}
+      resolve(interval);
+    }, interval);
+  });
+};
 
 // 任务列表:数组、数组中每一项是个函数，函数执行就是发送一个请求(返回promise实例)
 let tasks = [
   () => {
-    return delay(1000)
+    return delay(1000);
   },
   () => {
-    return delay(1001)
+    return delay(1001);
   },
   () => {
-    return delay(1002)
+    return delay(1002);
   },
   () => {
-    return delay(1003)
+    return delay(1003);
   },
   () => {
-    return delay(1004)
+    return delay(1004);
   },
   () => {
-    return delay(1005)
+    return delay(1005);
   },
   () => {
-    return delay(1006)
-  }
-]
+    return delay(1006);
+  },
+];
 
 /**
  * createRequest:实现并发管控
@@ -497,44 +502,139 @@ let tasks = [
  */
 const createRequest = function createRequest(tasks, limit) {
   //init params
-  if (!Array.isArray(tasks)) throw new TypeError('tasks is not an array')
-  if (isNaN(+limit)) limit = 2
-  limit = limit < 1 ? 1 : limit > tasks.length ? tasks.length : limit
+  if (!Array.isArray(tasks)) throw new TypeError("tasks is not an array");
+  if (isNaN(+limit)) limit = 2;
+  limit = limit < 1 ? 1 : limit > tasks.length ? tasks.length : limit;
 
   //限制几个并发，就需要创造几个工作区
   let works = new Array(limit).fill(null),
     values = [],
-    index = 0
+    index = 0;
   works = works.map(() => {
     return new Promise((resolve) => {
       //去任务列表中获取一个任务，拿到工作区执行；当此任务执行完，继续去任务列表处拿任务...
       const next = async () => {
         let prevIndex = index,
           task = tasks[index++],
-          value
-        if (typeof task === 'undefined') {
+          value;
+        if (typeof task === "undefined") {
           //任务列表中已经没有任务了,当前工作区已经处理完成
-          resolve()
-          return
+          resolve();
+          return;
         }
         try {
-          value = await task()
-          values[prevIndex] = value
+          value = await task();
+          values[prevIndex] = value;
         } catch (_) {
-          values[prevIndex] = null
+          values[prevIndex] = null;
         }
-        next()
-      }
-      next()
-    })
-  })
+        next();
+      };
+      next();
+    });
+  });
 
   //所有工作区的promise都是成功态,则证明请求都发送完成了
-  return Promise.all(works).then(() => values)
-}
+  return Promise.all(works).then(() => values);
+};
 
 createRequest(tasks).then((values) => {
-  console.log('请求都完成：', values)
+  console.log("请求都完成：", values);
   // 请求都完成： (7) [1000, 1001, 1002, 1003, 1004, 1005, 1006]
-})
+});
+```
+
+方法二：利用队列和 runing 记录正在运行的任务等方式，控制并发执行
+
+```js
+// 模拟数据请求
+const delay = function delay(interval) {
+  return new Promise((resolve, reject) => {
+    setTimeout(() => {
+      // if (interval === 1003) reject('xxx');
+      resolve(interval);
+    }, interval);
+  });
+};
+
+// 任务列表:数组、数组中每一项是个函数，函数执行就是发送一个请求(返回promise实例)
+let tasks = [
+  () => {
+    return delay(1000);
+  },
+  () => {
+    return delay(1001);
+  },
+  () => {
+    return delay(1002);
+  },
+  () => {
+    return delay(1003);
+  },
+  () => {
+    return delay(1004);
+  },
+  () => {
+    return delay(1005);
+  },
+  () => {
+    return delay(1006);
+  },
+];
+
+class TaskQueue {
+  constructor(tasks, limit, onComplete) {
+    // 把信息挂载到实例上，方便在其它的方法中基于实例获取
+    let self = this;
+    self.tasks = tasks;
+    self.limit = limit;
+    self.onComplete = onComplete;
+    self.queue = []; //存放任务的队列
+    self.runing = 0; //记录正在运行的任务数量
+    self.index = 0; //记录取出任务的索引
+    self.values = []; //记录每个任务完成的结果
+  }
+  pushStack(task) {
+    // 把任务存储到队列中
+    let self = this;
+    self.queue.push(task);
+    self.next();
+  }
+  async next() {
+    // 核心方法:根据runing控制哪些任务执行
+    let self = this,
+      { tasks, limit, onComplete, queue, runing, values, index } = self;
+    // 如果运行的任务数小于并发限制，而且能够取出对应的任务:取出对应任务并且去发送
+    if (runing < limit && index <= tasks.length - 1) {
+      self.runing++;
+      let prevIndex = index,
+        task = queue[self.index++],
+        value;
+      try {
+        value = await task();
+        values[prevIndex] = value;
+      } catch (err) {
+        values[prevIndex] = null;
+      }
+      self.runing--;
+      self.runing === 0 ? onComplete(values) : self.next();
+    }
+  }
+}
+const createRequest = function createRequest(tasks, limit, onComplete) {
+  if (!Array.isArray(tasks)) throw new TypeError("tasks must be an array");
+  if (typeof limit === "function") onComplete = limit;
+  limit = +limit;
+  if (isNaN(limit)) limit = 2;
+  if (typeof onComplete !== "function") onComplete = Function.prototype;
+  // 把任务列表中的任务，依次存放到任务队列中
+  let TQ = new TaskQueue(tasks, limit, onComplete);
+  tasks.forEach((task) => {
+    TQ.pushStack(task);
+  });
+};
+
+createRequest(tasks, (values) => {
+  console.log(`所有请求都成功`, values);
+});
 ```
