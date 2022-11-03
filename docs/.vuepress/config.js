@@ -24,6 +24,10 @@ module.exports = {
                 text: 'Vue',
                 link: '/vue/README.md',
             },
+            {
+                text: '项目实践',
+                link: 'https://gitee.com/leoamazing/practice',
+            },
         ],
 
     },
