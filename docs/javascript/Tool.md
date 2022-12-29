@@ -191,6 +191,15 @@
         return target;
     };
 
+    /* 将 RGB 转换为十六进制 */
+    const rgbToHex = (r, g, b) => "#" + ((1 << 24) + (r << 16) + (g << 8) + b).toString(16).slice(1);
+
+    /* 文字复制到剪贴板 */
+    const copyText = async (text) => await navigator.clipboard.writeText(text);
+
+    /* 生成随机十六进制 */
+    const randomHexColor = () => `#${Math.floor(Math.random() * 0xffffff).toString(16).padEnd(6, "0")}`;
+
     /* 暴露API */
     const utils = {
         version: '1.0.0',
@@ -204,7 +213,10 @@
         isArrayLike,
         each,
         clone,
-        merge
+        merge,
+        rgbToHex,
+        copyText,
+        randomHexColor
     };
     if (typeof module === "object" && typeof module.exports === "object") module.exports = utils;
     if (typeof window !== "undefined") window.utils = utils;
