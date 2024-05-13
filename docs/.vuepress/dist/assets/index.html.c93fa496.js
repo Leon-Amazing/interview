@@ -1,1 +1,0 @@
-const e={key:"v-744e35e2",path:"/vue/",title:"Vue",lang:"zh-CN",frontmatter:{},excerpt:"",headers:[],git:{updatedTime:1644849031e3,contributors:[{name:"Leon-Amazing",email:"leon1787128919@163.com",commits:1}]},filePathRelative:"vue/README.md"};export{e as data};
