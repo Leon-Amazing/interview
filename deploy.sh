@@ -9,7 +9,8 @@ npm run build
 # 进入生成的文件夹
 cd docs/.vuepress/dist
 
-git status
-git add .
+git init
+git add -A
 git commit -m 'deploy'
-git push
+
+git push -f https://github.com/Leon-Amazing/interview.git master:gh-pages
