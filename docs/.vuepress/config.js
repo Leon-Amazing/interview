@@ -25,6 +25,10 @@ module.exports = {
                 link: '/vue/README.md',
             },
             {
+                text: '数据结构与算法',
+                link: '/dataStructuresAndAlgorithms/README.md',
+            },
+            {
                 text: '项目实践',
                 link: 'https://gitee.com/leoamazing/practice',
             },
