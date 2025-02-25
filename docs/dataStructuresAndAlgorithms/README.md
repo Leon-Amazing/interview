@@ -313,6 +313,8 @@ m.set('a', 'aaa');
 
 ![图片](./img/30.png)
 
+**树的其他常用操作:深度/广度优先遍历、先中后序遍历**
+
 ![图片](./img/31.png)
 
 ![图片](./img/32.png)
@@ -456,3 +458,39 @@ postorder(bt);
 [111.二叉树的最小深度](https://leetcode.cn/problems/minimum-depth-of-binary-tree/)
 
 ![图片](./img/39.png)
+
+[102. 二叉树的层序遍历](https://leetcode.cn/problems/binary-tree-level-order-traversal/description/)
+
+![图片](./img/40.png)
+
+![图片](./img/41.png)
+
+[94. 二叉树的中序遍历](https://leetcode.cn/problems/binary-tree-inorder-traversal/)
+
+![图片](./img/42.png)
+
+[112. 路径总和](https://leetcode.cn/problems/path-sum/)
+
+![图片](./img/43.png)
+
+**前端与树:遍历 JSON 的所有节点值**
+
+```js
+const json = {
+  a: { b: { c: 1 } },
+  d: [1, 2],
+};
+
+const dfs = (n, path) => {
+  console.log(n, path);
+  Object.keys(n).forEach(k => {
+    dfs(n[k], path.concat(k));
+  });
+};
+
+dfs(json, []);
+```
+
+**前端与树:渲染 Antd 的树组件**
+
+![图片](./img/44.png)
