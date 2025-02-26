@@ -494,3 +494,88 @@ dfs(json, []);
 **前端与树:渲染 Antd 的树组件**
 
 ![图片](./img/44.png)
+
+### 9.图
+
+![图片](./img/45.png)![图片](./img/46.png)
+
+![图片](./img/47.png)
+
+![图片](./img/48.png)
+
+```js
+const graph = {
+  0: [1, 2],
+  1: [2],
+  2: [0, 3],
+  3: [3],
+};
+
+module.exports = graph;
+```
+
+```js
+const graph = require('./graph');
+
+const visited = new Set();
+const dfs = n => {
+  console.log(n);
+  visited.add(n);
+  graph[n].forEach(c => {
+    if (!visited.has(c)) {
+      dfs(c);
+    }
+  });
+};
+
+dfs(2);
+```
+
+![图片](./img/49.png)
+
+```js
+const graph = require('./graph');
+
+const visited = new Set();
+const q = [2];
+while (q.length) {
+  const n = q.shift();
+  console.log(n);
+  visited.add(n);
+  graph[n].forEach(c => {
+    if (!visited.has(c)) {
+      q.push(c);
+    }
+  });
+}
+```
+
+```js{557,565}
+const graph = require('./graph');
+
+const visited = new Set();
+visited.add(2)
+const q = [2];
+while (q.length) {
+  const n = q.shift();
+  console.log(n);
+  graph[n].forEach(c => {
+    if (!visited.has(c)) {
+      q.push(c);
+        visited.add(n);
+    }
+  });
+}
+```
+
+[65. 有效数字](https://leetcode.cn/problems/valid-number/description/)
+
+![图片](./img/50.png) ![图片](./img/51.png)
+
+[417. 太平洋大西洋水流问题](https://leetcode.cn/problems/pacific-atlantic-water-flow/)
+
+![图片](./img/52.png) ![图片](./img/53.png)
+
+[133. 克隆图](https://leetcode.cn/problems/clone-graph/)
+
+![图片](./img/54.png) ![图片](./img/55.png)
