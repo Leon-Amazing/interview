@@ -663,3 +663,219 @@ minHeap.size(); // 2
 [23.合井 K 个升序链表](https://leetcode.cn/problems/merge-k-sorted-lists/)
 
 ![图片](./img/60.png) ![图片](./img/61.png)
+
+### 11.排序和搜索
+
+![图片](./img/62.png)
+
+**JavaScript 实现：冒泡排序**
+
+![图片](./img/63.png)
+
+```js
+Array.prototype.bubbleSort = function () {
+  for (let i = 0; i < this.length - 1; i++) {
+    for (let j = 0; j < this.length - 1 - i; j++) {
+      if (this[j] > this[j + 1]) {
+        let temp = this[j];
+        this[j] = this[j + 1];
+        this[j + 1] = temp;
+      }
+    }
+  }
+  return this;
+};
+
+const arr = [5, 3, 8, 4, 2];
+console.log(arr.bubbleSort()); //[ 2, 3, 4, 5, 8 ]
+```
+
+**JavaScript 实现：选择排序**
+
+![图片](./img/64.png)
+
+```js
+Array.prototype.selectionSort = function () {
+  for (let i = 0; i < this.length - 1; i++) {
+    let min = i;
+    for (let j = i; j < this.length; j++) {
+      if (this[j] < this[min]) {
+        min = j;
+      }
+    }
+    if (min !== i) {
+      let temp = this[i];
+      this[i] = this[min];
+      this[min] = temp;
+    }
+  }
+  return this;
+};
+
+const arr = [5, 3, 8, 4, 2];
+console.log(arr.selectionSort()); //[ 2, 3, 4, 5, 8 ]
+```
+
+**JavaScript 实现：插入排序**
+
+![图片](./img/65.png)
+
+```js
+Array.prototype.insertionSort = function () {
+  const temp = this[1];
+  let j = 1;
+  while (j > 0) {
+    if (this[j - 1] > temp) {
+      this[j] = this[j - 1];
+    } else {
+      break;
+    }
+    j--;
+  }
+  this[j] = temp;
+};
+
+Array.prototype.insertionSort = function () {
+  for (let i = 1; i < this.length; i++) {
+    const temp = this[i];
+    let j = i;
+    while (j > 0) {
+      if (this[j - 1] > temp) {
+        this[j] = this[j - 1];
+      } else {
+        break;
+      }
+      j--;
+    }
+    this[j] = temp;
+  }
+  return this;
+};
+const arr = [5, 3, 8, 4, 2];
+console.log(arr.insertionSort()); // [ 2, 3, 4, 5, 8 ]
+```
+
+**JavaScript 实现：归并排序**
+
+![图片](./img/66.png)
+
+```js
+Array.prototype.mergeSort = function () {
+  const rec = arr => {
+    if (arr.length === 1) {
+      return arr;
+    }
+    const mid = Math.floor(arr.length / 2);
+    const left = arr.slice(0, mid);
+    const right = arr.slice(mid);
+    const orderLeft = rec(left);
+    const orderRight = rec(right);
+    const res = [];
+    while (orderLeft.length || orderRight.length) {
+      if (orderLeft.length && orderRight.length) {
+        res.push(orderLeft[0] < orderRight[0] ? orderLeft.shift() : orderRight.shift());
+      } else if (orderLeft.length) {
+        res.push(orderLeft.shift());
+      } else {
+        res.push(orderRight.shift());
+      }
+    }
+    return res;
+  };
+  const res = rec(this);
+  res.forEach((n, i) => {
+    this[i] = n;
+  });
+  return this;
+};
+
+const arr = [5, 3, 8, 4, 2];
+console.log(arr.mergeSort()); //[ 2, 3, 4, 5, 8 ]
+```
+
+**JavaScript 实现：快速排序**
+
+![图片](./img/67.png)
+
+```js
+Array.prototype.quickSort = function () {
+  const rec = arr => {
+    if (arr.length === 1) {
+      return arr;
+    }
+    const left = [];
+    const right = [];
+    const mid = arr[0];
+    for (let i = 1; i < arr.length; i++) {
+      if (arr[i] < mid) {
+        left.push(arr[i]);
+      } else {
+        right.push(arr[i]);
+      }
+    }
+    return [...rec(left), mid, ...rec(right)];
+  };
+  const res = rec(this);
+  res.forEach((n, i) => {
+    this[i] = n;
+  });
+  return this;
+};
+
+const arr = [5, 3, 8, 4, 2];
+console.log(arr.quickSort()); //[ 2, 3, 4, 5, 8 ]
+```
+
+**JavaScript 实现：顺序搜索**
+
+![图片](./img/68.png)
+
+```js
+Array.prototype.sequentialSearch = function (target) {
+  for (let i = 0; i < this.length; i++) {
+    if (this[i] === target) {
+      return i;
+    }
+  }
+  return -1;
+};
+
+const arr = [5, 3, 8, 4, 2];
+console.log(arr.sequentialSearch(8)); // 2
+console.log(arr.sequentialSearch(10)); // -1
+```
+
+**JavaScript 实现：二分搜索**
+
+![图片](./img/69.png)
+
+```js
+Array.prototype.binarySearch = function (target) {
+  let low = 0;
+  let high = this.length - 1;
+
+  while (low <= high) {
+    const mid = Math.floor((low + high) / 2);
+    if (this[mid] === target) {
+      return mid;
+    } else if (this[mid] < target) {
+      low = mid + 1;
+    } else {
+      high = mid - 1;
+    }
+  }
+  return -1;
+};
+
+const arr = [5, 3, 8, 4, 2];
+console.log(arr.binarySearch(8)); // 2
+console.log(arr.binarySearch(10)); // -1
+```
+
+[21.合并两个有序链表](https://leetcode.cn/problems/merge-two-sorted-lists/)
+
+![图片](./img/70.png)
+
+[374.猜数字大小](https://leetcode.cn/problems/guess-number-higher-or-lower/)
+
+![图片](./img/71.png)
