@@ -879,3 +879,23 @@ console.log(arr.binarySearch(10)); // -1
 [374.猜数字大小](https://leetcode.cn/problems/guess-number-higher-or-lower/)
 
 ![图片](./img/71.png)
+
+### 12.分而治之(思想)
+
+![图片](./img/72.png)
+
+[374.猜数字大小](https://leetcode.cn/problems/guess-number-higher-or-lower/)
+
+![图片](./img/73.png)
+
+[226. 翻转二叉树](https://leetcode.cn/problems/invert-binary-tree/)
+
+![图片](./img/74.png)
+
+[100. 相同的树](https://leetcode.cn/problems/same-tree/)
+
+![图片](./img/75.png)
+
+[101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)
+
+![图片](./img/76.png)
