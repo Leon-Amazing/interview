@@ -899,3 +899,15 @@ console.log(arr.binarySearch(10)); // -1
 [101. 对称二叉树](https://leetcode.cn/problems/symmetric-tree/)
 
 ![图片](./img/76.png)
+
+### 13.动态规划(思想)
+
+![图片](./img/77.png)
+
+[70. 爬楼梯](https://leetcode.cn/problems/climbing-stairs/)
+
+![图片](./img/78.png)
+
+[198. 打家劫舍](https://leetcode.cn/problems/house-robber/)
+
+![图片](./img/79.png)
