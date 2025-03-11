@@ -911,3 +911,15 @@ console.log(arr.binarySearch(10)); // -1
 [198. 打家劫舍](https://leetcode.cn/problems/house-robber/)
 
 ![图片](./img/79.png)
+
+### 14.贪心算法(思想)
+
+![图片](./img/80.png)
+
+[455. 分发饼干](https://leetcode.cn/problems/assign-cookies/description/)
+
+![图片](./img/81.png)
+
+[122. 买卖股票的最佳时机 II](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/)
+
+![图片](./img/82.png)
