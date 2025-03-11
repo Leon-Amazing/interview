@@ -923,3 +923,15 @@ console.log(arr.binarySearch(10)); // -1
 [122. 买卖股票的最佳时机 II](https://leetcode.cn/problems/best-time-to-buy-and-sell-stock-ii/)
 
 ![图片](./img/82.png)
+
+### 15.回溯算法(思想)
+
+![图片](./img/83.png)
+
+[46. 全排列](https://leetcode.cn/problems/permutations/description/)
+
+![图片](./img/84.png)
+
+[78. 子集](https://leetcode.cn/problems/subsets/)
+
+![图片](./img/85.png)
