@@ -102,7 +102,7 @@ div.textContent = 'hello vue3'; // 直接修改
 ```js
 const obj = {
   tag: 'div',
-  children: [{ tag: 'span', children: 'hello world' }]
+  children: [{ tag: 'span', children: 'hello world' }],
 };
 ```
 
@@ -129,7 +129,7 @@ function Render(obj, root) {
 ```js
 const obj = {
   tag: 'div',
-  children: [{ tag: 'span', children: 'hello world' }]
+  children: [{ tag: 'span', children: 'hello world' }],
 };
 // 渲染到 body 下
 Render(obj, document.body);
@@ -233,8 +233,8 @@ const config = {
   input: 'input.js',
   output: {
     file: 'output.js',
-    format: 'iife' // 指定模块形式
-  }
+    format: 'iife', // 指定模块形式
+  },
 };
 
 export default config;
@@ -289,8 +289,8 @@ const config = {
   input: 'input.js',
   output: {
     file: 'output.js',
-    format: 'cjs' // 指定模块形式
-  }
+    format: 'cjs', // 指定模块形式
+  },
 };
 export default config;
 ```
@@ -343,7 +343,7 @@ if (__VUE_OPTIONS_API__) {
 ```js
 // webpack.DefinePlugin 插件配置
 new webpack.DefinePlugin({
-  __VUE_OPTIONS_API__: JSON.stringify(true) // 开启特性
+  __VUE_OPTIONS_API__: JSON.stringify(true), // 开启特性
 });
 ```
 
@@ -352,7 +352,7 @@ new webpack.DefinePlugin({
 ```js
 export default {
   data() {}, // data 选项
-  computed: {} // computed 选项
+  computed: {}, // computed 选项
   // 其他选项
 };
 ```
@@ -365,7 +365,7 @@ export default {
     const count = ref(0);
     const doubleCount = computed(() => count.value * 2);
     // 相当于 Vue.js 2 中的 computed 选项
-  }
+  },
 };
 ```
 
@@ -382,7 +382,7 @@ export default {
 export default {
   foo(fn) {
     fn && fn();
-  }
+  },
 };
 ```
 
@@ -419,7 +419,7 @@ export default {
     } catch (e) {
       /* ... */
     }
-  }
+  },
 };
 ```
 
@@ -433,7 +433,7 @@ export default {
   },
   bar(fn) {
     callWithErrorHandling(fn);
-  }
+  },
 };
 function callWithErrorHandling(fn) {
   try {
@@ -456,7 +456,7 @@ export default {
   // 用户可以调用该函数注册统一的错误处理函数
   registerErrorHandler(fn) {
     handleError = fn;
-  }
+  },
 };
 function callWithErrorHandling(fn) {
   try {
@@ -501,3 +501,367 @@ app.config.errorHandler = () => {
 ### 2.7 良好的 TypeScript 类型支持
 
 TypeScript 是由微软开源的编程语言，简称 TS，它是 JavaScript 的超集，能够为 JavaScript 提供类型支持。现在越来越多的开发者和团队在项目中使用 TS。使用 TS 的好处有很多，如代码即文档、编辑器自动提示、一定程度上能够避免低级 bug、代码的可维护性更强等。因此对 TS 类型的支持是否完善也成为评价一个框架的重要指标。
+
+## 3.Vue.js 3 的设计思路
+
+### 3.1 声明式地描述 UI
+
+- DOM 元素：例如是 div 标签还是 a 标签。
+- 属性：如 a 标签的 href 属性，再如 id、class 等通用属性。
+- 事件：如 click、keydown 等。元素的层级结构：DOM 树的层级结构，既有子节点，又有父节点。
+
+那么，如何声明式地描述上述内容呢？这是框架设计者需要思考的问题。其实方案有很多。拿 Vue.js 3 来说，相应的解决方案是：
+
+- 使用与 HTML 标签一致的方式来描述 DOM 元素，例如描述一个 div 标签时可以使用 `<div></div>`
+- 使用与 HTML 标签一致的方式来描述属性，例如 `<div id="app"></div>`
+- 使用 : 或 v-bind 来描述动态绑定的属性，例如 `<div :id="dynamicId"></div>`
+- 使用 @ 或 v-on 来描述事件，例如点击事件 `<div @click="handler"></div>`
+- 使用与 HTML 标签一致的方式来描述层级结构，例如一个具有 span 子节点的 div 标签 `<div><span></span></div>`
+
+可以看到，在 Vue.js 中，哪怕是事件，都有与之对应的描述方式。用户不需要手写任何命令式代码，这就是所谓的声明式地描述 UI。
+
+除了上面这种使用模板来声明式地描述 UI 之外，我们还可以用 JavaScript 对象来描述，代码如下所示：
+
+```js
+const title = {
+  // 标签名称
+  tag: 'h1',
+  // 标签属性
+  props: {
+    onClick: handler,
+  },
+  // 子节点
+  children: [{ tag: 'span' }],
+};
+
+//对应到 Vue.js 模板，其实就是：
+<h1 @click="handler"><span></span></h1>
+```
+
+使用 JavaScript 对象描述 UI 更加灵活，假如我们要表示一个标题，根据标题级别的不同，会分别采用 h1~h6 这几个标签，如果用 JavaScript 对象来描述，我们只需要使用一个变量来代表 h 标签即可：
+
+```js
+// h 标签的级别
+let level = 3;
+const title = {
+  tag: `h${level}`, // h3 标签
+};
+
+<h1 v-if="level === 1"></h1>
+<h2 v-else-if="level === 2"></h2>
+<h3 v-else-if="level === 3"></h3>
+<h4 v-else-if="level === 4"></h4>
+<h5 v-else-if="level === 5"></h5>
+<h6 v-else-if="level === 6"></h6>
+```
+
+而使用 JavaScript 对象来描述 UI 的方式，其实就是所谓的虚拟 DOM。现在大家应该觉得虚拟 DOM 其实也没有那么神秘了吧。正是因为虚拟 DOM 的这种灵活性，Vue.js 3 除了支持使用模板描述 UI 外，还支持使用虚拟 DOM 描述 UI。其实我们在 Vue.js 组件中手写的渲染函数就是使用虚拟 DOM 来描述 UI 的，如以下代码所示：
+
+```js
+import { h } from 'vue';
+
+export default {
+  render() {
+    return h('h1', { onClick: handler }); // 虚拟 DOM
+  },
+};
+```
+
+其实 h 函数的返回值就是一个对象，其作用是让我们编写虚拟 DOM 变得更加轻松。如果把上面 h 函数调用的代码改成 JavaScript 对象，就需要写更多内容：
+
+```js
+export default {
+  render() {
+    return {
+      tag: 'h1',
+      props: { onClick: handler },
+    };
+  },
+};
+```
+
+h 函数就 是一个辅助创建虚拟 DOM 的工具函数。
+
+### 3.2 初识渲染器
+
+渲染器的作用就是把虚拟 DOM 渲染为真实 DOM。
+
+![图片](./img/11.png)
+
+虚拟 DOM：
+
+```js
+const vnode = {
+  tag: 'div',
+  props: {
+    onClick: () => alert('hello'),
+  },
+  children: 'click me',
+};
+```
+
+要编写一个渲染器，把上面这段虚拟 DOM 渲染为真实 DOM：
+
+```js
+function renderer(vnode, container) {
+  // 使用 vnode.tag 作为标签名称创建 DOM 元素
+  const el = document.createElement(vnode.tag);
+  // 遍历 vnode.props，将属性、事件添加到 DOM 元素
+  for (const key in vnode.props) {
+    if (/^on/.test(key)) {
+      // 如果 key 以 on 开头，说明它是事件
+      el.addEventListener(
+        key.substr(2).toLowerCase(), // 事件名称 onClick ---> click
+        vnode.props[key] // 事件处理函数
+      );
+    }
+  }
+
+  // 处理 children
+  if (typeof vnode.children === 'string') {
+    // 如果 children 是字符串，说明它是元素的文本子节点
+    el.appendChild(document.createTextNode(vnode.children));
+  } else if (Array.isArray(vnode.children)) {
+    // 递归地调用 renderer 函数渲染子节点，使用当前元素 el 作为挂载点
+    vnode.children.forEach(child => renderer(child, el));
+  }
+
+  // 将元素添加到挂载点下
+  container.appendChild(el);
+}
+```
+
+这里的 renderer 函数接收如下两个参数。
+
+- vnode：虚拟 DOM 对象。
+- container：一个真实 DOM 元素，作为挂载点，渲染器会把虚拟 DOM 渲染到该挂载点下。
+
+```js
+renderer(vnode, document.body); // body 作为挂载点
+```
+
+在浏览器中运行这段代码，会渲染出“click me”文本，点击该文本，会弹出 alert('hello')。
+
+![图片](./img/12.png)
+
+### 3.3 组件的本质
+
+组件就是一组 DOM 元素的封装，因此我们可以定义一个函数来代表组件，而函数的返回值就代表组件要渲染的内容：
+
+```js
+const MyComponent = function () {
+  return {
+    tag: 'div',
+    props: {
+      onClick: () => alert('hello'),
+    },
+    children: 'click me',
+  };
+};
+```
+
+可以看到，组件的返回值也是虚拟 DOM，它代表组件要渲染的内容。搞清楚了组件的本质，我们就可以定义用虚拟 DOM 来描述组件了。很简单，我们可以让虚拟 DOM 对象中的 tag 属性来存储组件函数：
+
+```js
+const vnode = {
+  tag: MyComponent,
+};
+```
+
+修改前面提到的 renderer 函数，如下所示：
+
+```js
+function renderer(vnode, container) {
+  if (typeof vnode.tag === 'string') {
+    // 说明 vnode 描述的是标签元素
+    mountElement(vnode, container);
+  } else if (typeof vnode.tag === 'function') {
+    // 说明 vnode 描述的是组件
+    mountComponent(vnode, container);
+  }
+}
+```
+
+```js
+function mountElement(vnode, container) {
+  // 使用 vnode.tag 作为标签名称创建 DOM 元素
+  const el = document.createElement(vnode.tag);
+  // 遍历 vnode.props，将属性、事件添加到 DOM 元素
+  for (const key in vnode.props) {
+    if (/^on/.test(key)) {
+      // 如果 key 以字符串 on 开头，说明它是事件
+      el.addEventListener(
+        key.substr(2).toLowerCase(), // 事件名称 onClick ---> click
+        vnode.props[key] // 事件处理函数
+      );
+    }
+  }
+
+  // 处理 children
+  if (typeof vnode.children === 'string') {
+    // 如果 children 是字符串，说明它是元素的文本子节点
+    el.appendChild(document.createTextNode(vnode.children));
+  } else if (Array.isArray(vnode.children)) {
+    // 递归地调用 renderer 函数渲染子节点，使用当前元素 el 作为挂载点
+    vnode.children.forEach(child => renderer(child, el));
+  }
+
+  // 将元素添加到挂载点下
+  container.appendChild(el);
+}
+```
+
+```js
+function mountComponent(vnode, container) {
+  // 调用组件函数，获取组件要渲染的内容（虚拟 DOM）
+  const subtree = vnode.tag();
+  // 递归地调用 renderer 渲染 subtree
+  renderer(subtree, container);
+}
+```
+
+组件一定得是函数吗？当然不是，我们完全可以使用一个 JavaScript 对象来表达组件，例如：
+
+```js
+// MyComponent 是一个对象
+const MyComponent = {
+  render() {
+    return {
+      tag: 'div',
+      props: {
+        onClick: () => alert('hello'),
+      },
+      children: 'click me',
+    };
+  },
+};
+```
+
+```js
+function renderer(vnode, container) {
+  if (typeof vnode.tag === 'string') {
+    mountElement(vnode, container);
+  } else if (typeof vnode.tag === 'object') {
+    // 如果是对象，说明 vnode 描述的是组件
+    mountComponent(vnode, container);
+  }
+}
+```
+
+```js
+function mountComponent(vnode, container) {
+  // vnode.tag 是组件对象，调用它的 render 函数得到组件要渲染的内容（虚拟 DOM）
+  const subtree = vnode.tag.render();
+  // 递归地调用 renderer 渲染 subtree
+  renderer(subtree, container);
+}
+```
+
+### 3.4 模板的工作原理
+
+编译器的作用其实就是将模板编译为渲染函数，例如给出如下模板：
+
+```vue
+<div @click="handler">click me</div>
+```
+
+对于编译器来说，模板就是一个普通的字符串，它会分析该字符串并生成一个功能与之相同的渲染函数：
+
+```js
+render() {
+  return h('div', { onClick: handler }, 'click me')
+}
+```
+
+一个 .vue 文件就是一个组件，如下所示：
+
+```vue
+<template>
+  <div @click="handler">click me</div>
+</template>
+
+<script>
+export default {
+  data() {
+    /* ... */
+  },
+  methods: {
+    handler: () => {
+      /* ... */
+    },
+  },
+};
+</script>
+```
+
+其中 \<template\> 标签里的内容就是模板内容，编译器会把模板内容编译成渲染函数并添加到 \<script\> 标签块的组件对象上，所以最终在浏览器里运行的代码就是：
+
+```js
+export default {
+  data() {
+    /* ... */
+  },
+  methods: {
+    handler: () => {
+      /* ... */
+    },
+  },
+  render() {
+    return h('div', { onClick: handler }, 'click me');
+  },
+};
+```
+
+无论是使用模板还是直接手写渲染函数，对于一个组件来 说，它要渲染的内容最终都是通过渲染函数产生的，然后渲染器再把 渲染函数返回的虚拟 DOM 渲染为真实 DOM，这就是模板的工作原 理，也是 Vue.js 渲染页面的流程。
+
+### 3.5 Vue.js 是各个模块组成的有机整体
+
+如前所述，组件的实现依赖于**渲染器**，模板的编译依赖于**编译器**，并且编译后生成的代码是根据渲染器和虚拟 DOM 的设计决定的，因此 Vue.js 的各个模块之间是互相关联、互相制约的，共同构成一个有机整体。
+
+假设我们有如下模板：
+
+```vue
+<div id="foo" :class="cls"></div>
+```
+
+道编译器会把这段代码编译成渲染函数：
+
+```js
+ render() {
+  // 为了效果更加直观，这里没有使用 h 函数，而是直接采用了虚拟 DOM 对象
+  // 下面的代码等价于：
+  // return h('div', { id: 'foo', class: cls })
+  return {
+    tag: 'div',
+    props: {
+      id: 'foo',
+      class: cls
+    }
+  }
+ }
+```
+
+能看出其中 id="foo" 是永远不会变化的，而 :class="cls" 是一个 v-bind 绑定，它是可能发生变化的。所以编译器能识别出哪些是静态属性，哪些是动态属性，在生成代码的时候完全可以附带这些信息：
+
+```js
+ render() {
+  return {
+  tag: 'div',
+  props: {
+    id: 'foo',
+    class: cls
+    },
+    patchFlags: 1 // 假设数字 1 代表 class 是动态的
+  }
+ }
+```
+
+对于渲染器来说，就相当于省去了寻找变更点的工作量，性能自然就提升了。
+
+通过这个例子，我们了解到编译器和渲染器之间是存在信息交流的，它们互相配合使得性能进一步提升，而它们之间交流的媒介就是虚拟 DOM 对象。
+
+### 3.6 总结
+
+1. 虚拟 DOM 要比模板更加灵活，但模板要 比虚拟 DOM 更加直观
+2. 渲染器的作用是，把虚 拟 DOM 对象渲染为真实 DOM 元素。
+3. Vue.js 的模板会被一个叫作编译器的程序编译为渲染函数。
