@@ -26,7 +26,7 @@ module.exports = {
             },
             {
                 text: '数据结构与算法',
-                link: '/dataStructuresAndAlgorithms/README.md',
+                link: '/DSA/README.md',
             },
             {
                 text: '项目实践',
